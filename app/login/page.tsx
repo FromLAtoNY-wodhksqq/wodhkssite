@@ -55,18 +55,22 @@ export default function LoginPage() {
     router.refresh();
   }
 
+  const inputClass =
+    "w-full rounded-xl border border-white/15 bg-white/10 px-4 py-3 text-[15px] text-white placeholder-white/45 outline-none backdrop-blur-xl transition focus:border-white/40 focus:bg-white/15";
+
   return (
     <div
       className="relative flex h-dvh flex-col items-center justify-center bg-cover bg-center"
       style={{ backgroundImage: "url(/login-bg.jpg)" }}
     >
-      <div className="absolute inset-0 bg-black/50" />
+      <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-black/40 to-black/70" />
+
       <form
         onSubmit={handleSubmit}
-        className="relative flex w-full max-w-sm flex-col gap-4 rounded-2xl border border-white/20 bg-white/90 p-6 backdrop-blur-sm dark:border-zinc-800 dark:bg-zinc-900/90"
+        className="relative flex w-full max-w-[360px] flex-col gap-3 rounded-[28px] border border-white/15 bg-white/10 p-8 shadow-[0_8px_40px_rgba(0,0,0,0.35)] backdrop-blur-2xl"
       >
-        <h1 className="text-xl font-semibold text-black dark:text-zinc-50">
-          {mode === "login" ? "로그인" : "회원가입"}
+        <h1 className="mb-2 text-center text-[22px] font-semibold tracking-tight text-white">
+          {mode === "login" ? "로그인" : "계정 만들기"}
         </h1>
 
         <input
@@ -75,7 +79,7 @@ export default function LoginPage() {
           onChange={(e) => setEmail(e.target.value)}
           placeholder="이메일"
           required
-          className="rounded-lg border border-zinc-300 bg-white px-3 py-2 text-black outline-none focus:border-blue-500 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-50"
+          className={inputClass}
         />
         <input
           type="password"
@@ -84,7 +88,7 @@ export default function LoginPage() {
           placeholder="비밀번호"
           required
           minLength={8}
-          className="rounded-lg border border-zinc-300 bg-white px-3 py-2 text-black outline-none focus:border-blue-500 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-50"
+          className={inputClass}
         />
         {mode === "signup" && (
           <input
@@ -94,16 +98,18 @@ export default function LoginPage() {
             placeholder="비밀번호 확인"
             required
             minLength={8}
-            className="rounded-lg border border-zinc-300 bg-white px-3 py-2 text-black outline-none focus:border-blue-500 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-50"
+            className={inputClass}
           />
         )}
 
-        {error && <p className="text-sm text-red-500">{error}</p>}
+        {error && (
+          <p className="text-center text-[13px] text-red-300">{error}</p>
+        )}
 
         <button
           type="submit"
           disabled={loading}
-          className="rounded-lg bg-blue-600 py-2 font-medium text-white disabled:opacity-50"
+          className="mt-2 w-full rounded-xl bg-white py-3 text-[15px] font-medium text-black transition hover:bg-white/90 disabled:opacity-50"
         >
           {mode === "login" ? "로그인" : "가입하기"}
         </button>
@@ -115,7 +121,7 @@ export default function LoginPage() {
             setError("");
             setPasswordConfirm("");
           }}
-          className="text-sm text-zinc-500 hover:underline dark:text-zinc-400"
+          className="mt-1 text-center text-[13px] text-white/60 transition hover:text-white/90"
         >
           {mode === "login"
             ? "계정이 없나요? 회원가입"
