@@ -1,4 +1,5 @@
 import OpenAI from "openai";
+import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 
 const client = new OpenAI({
@@ -7,15 +8,30 @@ const client = new OpenAI({
 });
 
 export async function POST(req: Request) {
+  const session = await auth();
+  if (!session?.user?.id) {
+    return new Response("Unauthorized", { status: 401 });
+  }
+  const userId = session.user.id;
+
   const { messages, conversationId } = await req.json();
-
-  const conversation = conversationId
-    ? await prisma.conversation.findUnique({ where: { id: conversationId } })
-    : null;
-  const conversationRecord =
-    conversation ?? (await prisma.conversation.create({ data: {} }));
-
   const lastMessage = messages[messages.length - 1];
+
+  const existing = conversationId
+    ? await prisma.conversation.findFirst({
+        where: { id: conversationId, userId },
+      })
+    : null;
+
+  const conversationRecord =
+    existing ??
+    (await prisma.conversation.create({
+      data: {
+        userId,
+        title: lastMessage.content.slice(0, 40),
+      },
+    }));
+
   await prisma.message.create({
     data: {
       conversationId: conversationRecord.id,
